@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.platform.aicodehelper.mapper.ChatMemoryMapper">
+
+    <!-- 根据memoryId查询消息列表，按messageIndex排序 -->
+    <select id="selectByMemoryIdOrderByIndex" resultType="com.example.platform.aicodehelper.entity.ChatMemoryEntity">
+        SELECT * FROM chat_memory
+        WHERE memory_id = #{memoryId} AND deleted = 0
+        ORDER BY message_index ASC
+    </select>
+
+    <!-- 删除指定memoryId的旧消息，保留最新的maxMessages条 -->
+    <delete id="deleteOldMessages">
+        DELETE FROM chat_memory
+        WHERE memory_id = #{memoryId}
+        AND id NOT IN (
+            SELECT id FROM (
+                SELECT id FROM chat_memory
+                WHERE memory_id = #{memoryId} AND deleted = 0
+                ORDER BY message_index DESC
+                LIMIT #{maxMessages}
+            ) AS tmp
+        )
+    </delete>
+
+</mapper>
