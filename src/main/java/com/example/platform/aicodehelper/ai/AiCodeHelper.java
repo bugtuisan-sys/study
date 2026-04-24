@@ -28,6 +28,9 @@ public class AiCodeHelper {
         return aiMessage.text();
     }
 
+
+
+
     public String chat(UserMessage userMessage) {
         ChatResponse response = qwenChatModel.chat(userMessage);
         AiMessage aiMessage = response.aiMessage();
